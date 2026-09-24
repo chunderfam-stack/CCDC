@@ -52,7 +52,19 @@ sudo pkill -9 -t [shell] #for disconnecting ssh users
 ```
 
 ### Auditd
-Need more research
+
+```bash
+auditctl -w /etc/passwd -p wra -k passwd #Creates a watcher for /etc/passwrd
+
+auditctl -w [file] -p [read/write/attribute/execute] -k [name of watcher]
+
+sudo auditctl -w /usr/bin/whoami -p x -k privilege_check #Check if whoami is called
+
+/var/log/audit/audit.log #auditd log
+
+auditctl -l #list out all existing logs
+``` 
+
 
 ## Windows
 **Event Viewer -> Windows Logs -> Application/System/Security**
@@ -480,3 +492,9 @@ NAT makes it so your public ip address is one router
 **Research Iptables**
 
 Your router is your most important firewall
+
+
+# Scripts
+
+Powershell: iwr
+Linux: wget
