@@ -1,0 +1,7 @@
+Header (Address it to leadership: CEO, CISO, Network Ops)
+Incident Details (Quick Facts: hosts, IPs, service, times, accounts)
+Vulnerability (The weakness red team took advantage of)
+Initial Access (How and when they got in, with evidence)
+Impact (What they did and what it cost the business)
+Eradication (How you removed them)
+Remediation (How you closed the hole so it can't happen again)

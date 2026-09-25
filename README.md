@@ -17,6 +17,8 @@ sudo ss -tulnp #For ports
 ```
 ```bash
 who #For ssh
+
+netstat ss #Network connections and listening ports
 ```
 
 typically red teamers use reverse shells
@@ -49,6 +51,8 @@ sudo pkill -9 -t [shell] #for disconnecting ssh users
 ```
 ```bash
 /var/log/auth.log /var/log/secure #Logs for authentication
+
+/var/log/apache2/access.log #Log for services
 ```
 
 ### Auditd
@@ -72,12 +76,18 @@ auditctl -l #list out all existing logs
 [Windows Security Events Log](https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/)
 
 ### Sysmon
+Basically enhanced security events
+
 [Sysmon Install](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon)
 Download Sysmon and SwiftOnSecurityXML and run
 [SwiftOnSecurityXML Install](https://github.com/SwiftOnSecurity/sysmon-config)
-Do more research on this
+
+[Sysmon Logs list](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon)
+
 ```powershell
-sysmon.exe -accepteula -i sysmonconfig-export.xml
+sysmon.exe -accepteula -i sysmonconfig-export.xml #Install Sysmon
+
+Applications and Services Logs/Microsoft/Windows/Sysmon/Operational #Sysmon log storage
 ```
 
 
@@ -107,7 +117,26 @@ sudo -u $SPLUNK_USERNAME $SPLUNK_HOME/bin/splunk restart
 Then navigate to http://<your indexer ip>:8000
 Make sure that port 8000 is enabled on your tcp firewall
 
-Do more research on Splunk
+[For Research](https://medium.com/@shunkus/spl-introduction-from-basics-to-practical-splunk-searches-f4120000d02d)
+
+
+SPLUNK
+
+How a SIEM Works:
+
+1. Collect (Agents & Forwarders)
+2. Parse (Split raw text into fields)
+3. Store (Index everything)
+4. Correlate (Rules link events across hosts & raise alerts)
+5. Search (Queries, dashboards, & hunting)
+
+Splunk Filters (Splunk Processing Language):
+```SPL
+index=[] (which index to search, * is all)
+field=value (only events where a field matches)
+"some text" (any event containing that text)
+```
+
 
 # Threat Intelligence
 ![Research These](./TTPs.png)
@@ -117,7 +146,45 @@ Research These
 3. What can I do ahead of time to stop them from using this TTP?
 
 # Injects
-TBD
+**Always PDFs**
+
+- Buisness related requests
+- Responding to incidents
+- Installing software / services
+
+50% of your score
+
+Injects have clear instructions about what you need to do
+
+injects are high leverage parts of the competition **Hard focus on injects**
+
+Inject rules:
+- No AI
+- Show Your Evidence (screenshots)
+- Professional Writing / Memo Format
+- No Outside Help
+- Strict Deadlines
+
+**Format**
+*team##_inject##.pdf*
+
+Submit no matter what you have
+You are allowed multiple submissions, and they will take the latest pre-late submission
+
+
+Good inject qualities:
+- Specific & Concise
+- Screenshots
+- Professional Tone
+- Write to your audience
+- Cite your sources (sometimes)
+- **Read the Inject Multiple Times!**
+
+Treat the Inject like a checklist
+
+Be detailed, but do not be overly verbose.
+
+
 
 # Windows
 ## CMD
@@ -464,8 +531,12 @@ visudo #edits sudoers file
 - Allows you to search the process online
 - Gives you the PID of tasks
 
-## msert
-- Windows defender
+## msert (Windows)
+- Windows defender but as an application
+
+## Fail2Ban (Linux)
+- Use if brute forcing passwords is a problem
+
 
 # Basic networking
 
@@ -489,12 +560,85 @@ Block all ports that are not necessary for the service
 
 NAT makes it so your public ip address is one router
 
-**Research Iptables**
+Your router is your most important firewall (Might have to look up which router it is)
 
-Your router is your most important firewall
+### Iptables
+
+```bash
+sudo apt install iptables #Install iptables
+
+iptables [OPTIONS] COMMAND CHAIN RULE #Iptables syntax
+
+iptables -A INPUT -s [IP] -j DROP #Block an IP address
+
+iptables -D INPUT -s [IP] -j DROP #Unblock an IP address
+
+iptables -L #List all rules
+
+iptables -A OUTPUT -p tcp --dport [port] -j ACCEPT #Allow TCP outbound on specific port
+
+iptables-save > [file_path] #Save your firewall rules
+
+iptables-restore < [file_path] #Restore your firewall rules
+
+```
+
+DROP = deny
+
+ACCEPT = accept
+
 
 
 # Scripts
 
 Powershell: iwr
+
 Linux: wget
+
+```bash
+chmod +x [script]
+```
+
+# Log hunting tips
+Pivot on common fields (IP address, username, hostname, process name)
+Know your baseline (snapshot what normal looks like to see what something 'new' looks like)
+Sync your clocks (Check time zones)
+Map to MITRE ATT&CK (Name what you see)
+
+# Incident response
+Preparation (hardening)
+
+Detection & Analysis (threat hunting lives here)
+
+Containment, Eradication & Recovery
+
+Post-Incident Activity
+
+**Document before you delete. Screenshot then remove it.**
+
+Take notes as you threat hunt
+
+# Incident Reports
+**Always PDFs**
+
+write the incident report
+
+- Header (Address it to leadership: CEO, CISO, Network Ops)
+- Incident Details (Quick Facts: hosts, IPs, service, times, accounts)
+- Vulnerability (The weakness red team took advantage of)
+- Initial Access (How and when they got in, with evidence)
+- Impact (What they did and what it cost the business)
+- Eradication (How you removed them)
+- Remediation (How you closed the hole so it can't happen again)
+
+if you are hacked and correctly identify how, you gain points back to whatever you did
+
+Make sure that you have screenshots to back up your evidence
+
+Don't immediately delete things, make sure you understand what those things do and how red team added the malware.
+
+Don't use AI to write injects or incident reports
+
+Who is the report for?
+- Leadership - your primary reader
+- Judges - the people grading it
