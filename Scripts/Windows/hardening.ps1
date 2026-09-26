@@ -2,12 +2,12 @@
 
 Set-SmbServerConfiguration-EnableSMB1Protocol $false
 
-Disable-WindowsOptionalFeature -Online -FeatureName “SMB1Protocol”
+Disable-WindowsOptionalFeature -Online -FeatureName "SMB1Protocol"
 
 netsh advfirewall set allprofiles state on
 
 Rename-LocalUser -Name "Administrator" -NewName "sysadm01"
-Set-LocalUser -Name "sysadm01" -Password (Read-Host -AsSecureString "New password")
+Set-LocalUser -Name "sysadm01" -Password (Read-Host -AsSecureString "")
 Disable-LocalUser -Name "Guest"
 
 $pw = Read-Host -AsSecureString "Password"
@@ -16,11 +16,7 @@ Add-LocalGroupMember -Group "Administrators" -Member "backupadmin"
 
 
 # Disable RDP entirely if it's not needed
-Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal 
-Server' -Name "fDenyTSConnections" -Value 
-
-# If RDP is needed, require Network Level Authentication
-Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name "fDenyTSConnections" -Value 1
 
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True
 Get-NetFirewallRule -Enabled True | Format-Table DisplayName,Direction,Action
